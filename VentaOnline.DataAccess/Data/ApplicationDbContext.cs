@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VentaOnline.Models;
 
 namespace VentaOnline.Data
 {
@@ -9,5 +10,7 @@ namespace VentaOnline.Data
             : base(options)
         {
         }
+
+        public DbSet<Categoria> Categoria { get; set; }
     }
 }
