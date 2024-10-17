@@ -17,10 +17,13 @@ namespace VentaOnline.DataAccess.Data.Repository
         {
             _db = db;
             Categoria = new CategoriaRepository(_db);
+            Marca = new MarcaRepository(_db);
         }
 
 
         public ICategoriaRepository Categoria { get; private set; }
+
+        public IMarcaRepository Marca { get; private set; }
 
         public void Dispose()
         {

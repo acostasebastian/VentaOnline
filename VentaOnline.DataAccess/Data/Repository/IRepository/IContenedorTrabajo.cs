@@ -10,6 +10,8 @@ namespace VentaOnline.DataAccess.Data.Repository.IRepository
     {
         //Aquí se deben de ir agregando los diferentes repositorios
         ICategoriaRepository Categoria { get; }
+
+        IMarcaRepository Marca { get; }
         void Save();
     }
 }
