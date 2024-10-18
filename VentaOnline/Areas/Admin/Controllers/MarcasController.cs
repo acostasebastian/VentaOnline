@@ -57,19 +57,20 @@ namespace VentaOnline.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Marca marca)
         {
             if (ModelState.IsValid)
-            {
-                claimsIdentity = (ClaimsIdentity)this.User.Identity;
-                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                emailUsuarioActual = usuarioActual.Subject.Name;
-             
-
-                _logger.LogInformation("CREACIÓN DE MARCA \r\n Usuario registrado para el guardado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-                //Logica para guardar en BD
-                _contenedorTrabajo.Marca.Add(marca);
+            {              
 
                 try
                 {
+                    claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                    usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                    _logger.LogInformation("CREACIÓN DE MARCA \r\n Usuario registrado para el guardado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                    //Logica para guardar en BD
+                    _contenedorTrabajo.Marca.Add(marca);
+
                     _contenedorTrabajo.Save();
 
 
@@ -104,14 +105,14 @@ namespace VentaOnline.Areas.Admin.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "Contacte con el administrador e indique el siguiente error >> Error: " + ex.Message);
                         informacion = ex.Message;
-                        _logger.LogWarning("CREACIÓN DE MARCA \r\n Error al querer guardar en Plataforma {Time} - {@informacion}", DateTime.Now, informacion);
+                        _logger.LogWarning("CREACIÓN DE MARCA \r\n Error al querer guardar en Marca {Time} - {@informacion}", DateTime.Now, informacion);
                     }
 
                 }
             }
             return View(marca);
         }
-
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -132,18 +133,20 @@ namespace VentaOnline.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                claimsIdentity = (ClaimsIdentity)this.User.Identity;
-                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-                _logger.LogInformation("EDICIÓN DE MARCA \r\n Usuario registrado para la edición: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-                //Logica para actualizar en BD
-                _contenedorTrabajo.Marca.Update(marca);
+              
 
                 try
                 {
+                    claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                    usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                    _logger.LogInformation("EDICIÓN DE MARCA \r\n Usuario registrado para la edición: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                    //Logica para actualizar en BD
+                    _contenedorTrabajo.Marca.Update(marca);
+
                     _contenedorTrabajo.Save();
 
                     informacion = "Nombre: " + marca.Nombre + " - Id: " + marca.Id;

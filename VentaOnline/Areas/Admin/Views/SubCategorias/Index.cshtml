@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Lista de SubCategorías";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-8">
+            <h2 class="text-primary">Lista de SubCategorías</h2>
+        </div>
+        <div class="col-4 text-right">
+            <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Crear Nueva SubCategoría</a>
+        </div>
+    </div>
+
+    <br />
+    <br />
+    <table id="tblSubCategorias" class="table table-striped table-bordered" style="width: 100%">
+        <thead>
+            <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Categoría</th>
+                <th class="text-center">Nombre</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/subCategoria.js"></script>
+}
+

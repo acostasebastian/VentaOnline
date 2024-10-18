@@ -60,19 +60,20 @@ namespace VentaOnline.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Categoria categoria)
         {
             if (ModelState.IsValid)
-            {
-                claimsIdentity = (ClaimsIdentity)this.User.Identity;
-                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                emailUsuarioActual = usuarioActual.Subject.Name;
-                //emailUsuarioActual = "FLAVIA";
-
-                _logger.LogInformation("CREACIÓN DE CATEGORIA \r\n Usuario registrado para el guardado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-                //Logica para guardar en BD
-                _contenedorTrabajo.Categoria.Add(categoria);
+            {          
 
                 try
                 {
+                    claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                    usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    emailUsuarioActual = usuarioActual.Subject.Name;
+                    //emailUsuarioActual = "FLAVIA";
+
+                    _logger.LogInformation("CREACIÓN DE CATEGORIA \r\n Usuario registrado para el guardado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                    //Logica para guardar en BD
+                    _contenedorTrabajo.Categoria.Add(categoria);
+
                     _contenedorTrabajo.Save();
 
 
@@ -107,14 +108,14 @@ namespace VentaOnline.Areas.Admin.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "Contacte con el administrador e indique el siguiente error >> Error: " + ex.Message);
                         informacion = ex.Message;
-                        _logger.LogWarning("CREACIÓN DE CATEGORIA \r\n Error al querer guardar en Plataforma {Time} - {@informacion}", DateTime.Now, informacion);
+                        _logger.LogWarning("CREACIÓN DE CATEGORIA \r\n Error al querer guardar en Categoría {Time} - {@informacion}", DateTime.Now, informacion);
                     }
 
                 }
             }
             return View(categoria);
         }
-
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -134,19 +135,21 @@ namespace VentaOnline.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(Categoria categoria)
         {
             if (ModelState.IsValid)
-            {
-                claimsIdentity = (ClaimsIdentity)this.User.Identity;
-                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-                _logger.LogInformation("EDICIÓN DE CATEGORIA \r\n Usuario registrado para la edición: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-                //Logica para actualizar en BD
-                _contenedorTrabajo.Categoria.Update(categoria);
+            {              
 
                 try
                 {
+
+                    claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                    usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                    _logger.LogInformation("EDICIÓN DE CATEGORIA \r\n Usuario registrado para la edición: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                    //Logica para actualizar en BD
+                    _contenedorTrabajo.Categoria.Update(categoria);
+
                     _contenedorTrabajo.Save();
 
                     informacion = "Nombre: " + categoria.Nombre + " - Id: " + categoria.Id;
@@ -248,9 +251,7 @@ namespace VentaOnline.Areas.Admin.Controllers
             listaCategorias = listaCategorias.Skip(skip).Take(pageSize).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = listaCategorias });
-
-
-            // return Json(new { data = _contenedorTrabajo.Plataforma.GetAll() });
+                        
         }
 
 

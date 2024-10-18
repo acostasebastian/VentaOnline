@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,14 +25,14 @@ namespace VentaOnline.DataAccess.Data.Repository
 
         }
 
-        //public IEnumerable<SelectListItem>? GetListaPlataformas()
-        //{
-        //    return _db.Plataforma.Select(i => new SelectListItem()
-        //    {
-        //        Text = i.URL,
-        //        Value = i.Id.ToString(),
+        public IEnumerable<SelectListItem>? GetListaCategorias()
+        {
+            return _db.Categoria.Select(i => new SelectListItem()
+            {
+                Text = i.Nombre,
+                Value = i.Id.ToString(),
 
-        //    });
-        //}
+            });
+        }
     }
 }
