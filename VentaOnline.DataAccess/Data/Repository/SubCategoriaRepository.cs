@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VentaOnline.Data;
+using VentaOnline.DataAccess.Data.Repository.IRepository;
 using VentaOnline.Models;
 
-namespace VentaOnline.DataAccess.Data.Repository.IRepository
+namespace VentaOnline.DataAccess.Data.Repository
 {
     public class SubCategoriaRepository : Repository<SubCategoria>, ISubCategoriaRepository
     {

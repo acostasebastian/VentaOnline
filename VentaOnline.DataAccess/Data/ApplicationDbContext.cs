@@ -18,11 +18,12 @@ namespace VentaOnline.Data
             base.OnModelCreating(modelBuilder);
 
             //CREO UN INDICE PARA SUBCATEGORIA QUE INCLUYE CategoríaId Y Nombre >> para no repetir nombre para una misma categoria
-            modelBuilder.Entity<SubCategoria>()
-                //.HasAlternateKey(a => new { a.Nombre, a.CategoriaId }).IsUnique();
+            modelBuilder.Entity<SubCategoria>()            
                 .HasIndex(a => new { a.Nombre, a.CategoriaId })
-                .HasDatabaseName("IX_SubCategorias_CategoriaId_Nombre")
+                .HasDatabaseName("IX_SubCategorias_CategoriaId_Nombre")                
                 .IsUnique();
+            
+           
         }
 
         public DbSet<Categoria> Categoria { get; set; }
@@ -30,5 +31,8 @@ namespace VentaOnline.Data
         public DbSet<Marca> Marca { get; set; }
 
         public DbSet<SubCategoria> SubCategoria { get; set; }
+
+        public DbSet<Tamanio> Tamanio { get; set; }
+
     }
 }

@@ -14,6 +14,9 @@ namespace VentaOnline.DataAccess.Data.Repository.IRepository
         ISubCategoriaRepository SubCategoria { get; }
 
         IMarcaRepository Marca { get; }
+
+        ITamanioRepository Tamanio { get; }
+
         void Save();
     }
 }

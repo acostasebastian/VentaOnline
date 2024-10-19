@@ -145,15 +145,6 @@ namespace VentaOnline.Areas.Admin.Controllers
             return View(subCategoriaViewModel);
         }
 
-        private SubCategoriaViewModel ToViewModel(SubCategoria subCategoria)
-        {
-            return new SubCategoriaViewModel
-            { CategoriaId = subCategoria.CategoriaId,
-              Nombre = subCategoria.Nombre,
-              Categoria = subCategoria.Categoria
-
-            };
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -223,9 +214,16 @@ namespace VentaOnline.Areas.Admin.Controllers
 
 
 
+        private SubCategoriaViewModel ToViewModel(SubCategoria subCategoria)
+        {
+            return new SubCategoriaViewModel
+            {
+                CategoriaId = subCategoria.CategoriaId,
+                Nombre = subCategoria.Nombre,
+                Categoria = subCategoria.Categoria
 
-
-
+            };
+        }
 
 
         #region Llamadas a la API
