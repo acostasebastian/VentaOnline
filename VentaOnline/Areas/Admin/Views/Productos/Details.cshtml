@@ -1,0 +1,169 @@
+﻿@model VentaOnline.Models.ViewModels.ProductoViewModel
+
+@{
+    ViewData["Title"] = "Detalles Producto";
+}
+
+<br />
+<br />
+<h3 class="text-center">Detalles Producto</h3>
+<form method="POST" asp-action="Details" enctype="multipart/form-data">
+    <!--Se envía el ID como campo oculto-->
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Estado" />
+
+    <div class="row px-2">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="col-8 mt-4">
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="CategoriaId"></label>
+                </div>
+                <div class="col-8">
+
+                    <input asp-for="Categoria.Nombre" class="form-control" disabled />
+
+                </div>
+            </div>
+            <br />
+
+            @* LA SUBCATEGORIA DEBE ESTAR ANIDADA *@
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="SubCategoriaId"></label>
+                </div>
+                <div class="col-8">
+
+                    <input asp-for="SubCategoria.Nombre" class="form-control" disabled />
+
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MarcaId"></label>
+                </div>
+                <div class="col-8">
+
+
+                    <input asp-for="Marca.Nombre" class="form-control" disabled />
+
+                </div>
+            </div>
+            <br />
+
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Nombre"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Nombre" class="form-control" disabled />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Observaciones"></label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Observaciones" class="form-control" style="height: 300px;" disabled></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="TamanioId"></label>
+                </div>
+                <div class="col-8">
+
+
+                    <input asp-for="Tamanio.Nombre" class="form-control" disabled />
+
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Stock"></label>
+                </div>
+                <div class="col-8">                    
+                    <input asp-for="Stock" class="form-control" disabled />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Precio"></label>
+                </div>
+                <div class="col-8">
+                    
+                    <input asp-for="sPrecio" class="form-control" disabled />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col">
+
+                   
+                        <a asp-action="Index" class="btn btn-success form-control">Volver atrás</a>
+                   
+
+
+                </div>
+                &nbsp;
+                <div class="col">
+
+
+                  
+                       <a asp-action="Edit" class="btn btn-primary form-control" asp-route-id="@Model.Id">Editar</a>
+                    
+
+
+
+                </div>
+
+            </div>
+        
+
+        </div>
+
+        @if (@Model.UrlImagen != "")
+        {
+            <div class="col-4 pt-3">
+                <img src="@Model.UrlImagen" width="300px" style="border-radius:5px; border:1px solid #bbb9b9" disabled />
+            </div>
+        }
+
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.4.1/tinymce.min.js" integrity="sha512-TDS3vtbiUCZzBBZO8LFud171Hw+ykrQgkrvjwV+i+XsI0LC46PR4affO+9VbgcR79KreoN7J0HKup9mrle4gRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        })
+    </script>
+}

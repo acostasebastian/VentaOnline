@@ -25,14 +25,14 @@ namespace VentaOnline.DataAccess.Data.Repository
 
         }
 
-        //public IEnumerable<SelectListItem>? GetListaCategorias()
-        //{
-        //    return _db.Categoria.Select(i => new SelectListItem()
-        //    {
-        //        Text = i.Nombre,
-        //        Value = i.Id.ToString(),
+        public IEnumerable<SelectListItem>? GetListaTamanios()
+        {
+            return _db.Tamanio.Select(i => new SelectListItem()
+            {
+                Text = i.Nombre,
+                Value = i.Id.ToString(),
 
-        //    });
-        //}
+            });
+        }
     }
 }

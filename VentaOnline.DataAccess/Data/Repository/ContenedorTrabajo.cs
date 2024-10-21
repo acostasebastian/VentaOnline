@@ -20,6 +20,7 @@ namespace VentaOnline.DataAccess.Data.Repository
             SubCategoria = new SubCategoriaRepository(_db);
             Marca = new MarcaRepository(_db);
             Tamanio = new TamanioRepository(_db);
+            Producto = new ProductoRepository(_db);
         }
 
 
@@ -30,6 +31,8 @@ namespace VentaOnline.DataAccess.Data.Repository
         public IMarcaRepository Marca { get; private set; }
 
         public ITamanioRepository Tamanio { get; private set; }
+
+        public IProductoRepository Producto { get; private set; }
 
         public void Dispose()
         {

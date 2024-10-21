@@ -1,0 +1,242 @@
+﻿@model VentaOnline.Models.ViewModels.ProductoViewModel
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<br />
+<br />
+<h3 class="text-center">Crear un nuevo Producto</h3>
+<form method="POST" asp-action="Create" enctype="multipart/form-data">
+    <div class="row px-2 offset-1 border">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="col-10 offset-1 mt-4">
+
+            <div class="form-group row">
+                <div class="col-4">                    
+                    <label asp-for="CategoriaId"></label>
+                </div>
+                <div class="col-8">                                       
+
+                    <select asp-for="CategoriaId" id="dropCategoria" class="form-control">
+                        <option value="">Por favor, seleccione una categoría</option>
+                        @foreach (var item in Model.ListaCategorias)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <br />
+
+       
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="SubCategoriaId"></label>
+                </div>
+                <div class="col-8">
+                    
+                    @* Hago este if para poder recuperar los datos sisurge un error o excepcion, ya que la vista se recarga  *@
+                    @if (Model.SubCategoriaId != 0)
+                    {
+                        <select asp-for="SubCategoriaId" id="dropSubCategoria" class="form-control">
+                            <option value="">Por favor, seleccione una subCategoría</option>
+                            @foreach (var item in Model.ListaSubCategorias)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <select asp-for="SubCategoriaId" id="dropSubCategoria" class="form-control" disabled>
+                            <option value="">Por favor, seleccione una subCategoría</option>
+
+                        </select>
+                    }
+
+                   
+
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">                    
+                    <label asp-for="MarcaId"></label>
+                </div>
+                <div class="col-8">                    
+
+                    <select asp-for="MarcaId" id="dropMarca" class="form-control">
+                        <option value="">Por favor, seleccione una marca</option>
+                        @foreach (var item in Model.ListaMarcas)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <br />
+
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Nombre"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingresa el Nombre del Producto" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Observaciones"></label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Observaciones" class="form-control" style="height: 300px;"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">                    
+                    <label asp-for="TamanioId"></label>
+                </div>
+                <div class="col-8">
+
+                    <select asp-for="TamanioId" id="dropTamanio" class="form-control">
+                        <option value="">Por favor, seleccione un tamaño</option>
+                        @foreach (var item in Model.ListaTamanios)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Stock"></label>
+                </div>
+                <div class="col-8">
+                    @* <input id="pesos" asp-route-id="@Model.pesosEntrega" asp-for="pesosEntrega" class="form-control" placeholder="Ingrese los Pesos Entregados" type="number" /> *@
+                    <input asp-for="Stock" class="form-control" placeholder="Ingrese el stock" />
+                    @*  @Html.EditorFor(model => model.pesosEntrega, new { htmlAttributes = new { @class = "form-control" } }) *@
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Precio"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="sPrecio" class="form-control" placeholder="Ingrese el precio" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+            </div>
+            <br />        
+      
+
+            <div class="form-group row">
+
+
+                <div class="col-4">
+                    <label asp-for="UrlImagen" class="control-label"></label>
+                </div>
+
+                <div class="col-8">
+                    <input type="file" name="imagen" id="subidaArchivo" class="form-control" />
+                    <span asp-validation-for="UrlImagen" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group-row">
+                <div class="col-8">
+                    <partial name="_VistaCrearVolver" />
+                </div>
+            </div>
+
+            <br />
+
+        </div>
+
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.4.1/tinymce.min.js" integrity="sha512-TDS3vtbiUCZzBBZO8LFud171Hw+ykrQgkrvjwV+i+XsI0LC46PR4affO+9VbgcR79KreoN7J0HKup9mrle4gRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        })
+    </script>
+  
+
+    <script>
+        $(document).ready(function() {
+            //Manejar el cambio en el dropdown de Categoria
+            $("#dropCategoria").change(function() {
+                var categoriaId = $(this).val();
+                console.log("id "+categoriaId)
+
+             // Limpiar y deshabilitar el dropdown dependiente
+             $("#dropSubCategoria").empty().append("<option value=''>Por favor, seleccione una subCategoría</option>").prop("disabled",true);
+
+             if(categoriaId) {
+
+                  console.log("entro")
+                 //Hacer una solicitud AJAX par aobtener las subcategorias asociadas a la categoria
+                 $.ajax({
+                     url:"ObtenerSubCategorias",
+                     type: "GET",
+                     data: {categoriaId: categoriaId },
+                     success: function(subcategorias){
+                         //Llenar el dropdown de SubCategoria con las opciones obtenidas
+                         $.each(subcategorias, function (index, subcategoria){
+                              $("#dropSubCategoria").append("<option value='"+subcategoria.id+"'>"+ subcategoria.nombre+ "</option>").prop("disabled",false);
+                              
+                                   console.log("3" +subcategoria.id)
+                                   console.log("4" +subcategoria.nombre)
+                         });
+
+                           console.log("hizo each")
+
+                         //Habilitar el dropdown de SubCategoria
+                       //  $("dropSubCategoria").prop("disabled",false);
+                           
+                       
+                          console.log("habilita campo")
+                     }
+                 });
+             }
+
+            });
+        });
+    </script>
+
+}
+
+
+
+

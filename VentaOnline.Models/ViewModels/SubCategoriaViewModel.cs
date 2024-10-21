@@ -9,10 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering; //NuGet >> Microsoft.AspNetCore.Mvc.Vi
 namespace VentaOnline.Models.ViewModels
 {
     public class SubCategoriaViewModel : SubCategoria
-    {
-        //[Display(Name = "Categoría")]
-        //[Required(ErrorMessage = "Debe ingresar la Categoría")]
-        public int CategoriaVMId { get; set; }
+    {      
 
         public IEnumerable<SelectListItem>? ListaCategorias { get; set; }
     }

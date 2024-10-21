@@ -8,10 +8,9 @@ using VentaOnline.Models;
 
 namespace VentaOnline.DataAccess.Data.Repository.IRepository
 {
-    public interface ITamanioRepository : IRepository<Tamanio>
+    public interface IProductoRepository : IRepository<Producto>
     {
-        void Update(Tamanio tamanio);
-
-        IEnumerable<SelectListItem>? GetListaTamanios();
+        void Update(Producto producto);
+        
     }
 }

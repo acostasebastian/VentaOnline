@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ namespace VentaOnline.DataAccess.Data.Repository.IRepository
     {
         void Update(Marca marca);
 
-        //  IEnumerable<SelectListItem>? GetListaPlataformas();
+        IEnumerable<SelectListItem>? GetListaMarcas();
     }
 }

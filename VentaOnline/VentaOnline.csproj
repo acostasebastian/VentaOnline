@@ -26,4 +26,8 @@
     <ProjectReference Include="..\VentaOnline.DataAccess\VentaOnline.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\imagenes\productos\" />
+  </ItemGroup>
+
 </Project>

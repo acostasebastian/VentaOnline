@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable> <!--se cambia para que el model.isvalid funcione correctamente-->
   </PropertyGroup>
 
   <ItemGroup>

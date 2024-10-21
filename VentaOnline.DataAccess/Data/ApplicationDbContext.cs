@@ -22,8 +22,18 @@ namespace VentaOnline.Data
                 .HasIndex(a => new { a.Nombre, a.CategoriaId })
                 .HasDatabaseName("IX_SubCategorias_CategoriaId_Nombre")                
                 .IsUnique();
-            
-           
+
+            modelBuilder.Entity<Producto>()
+                .HasIndex(a => new { a.CategoriaId, a.SubCategoriaId, a.MarcaId, a.Nombre })
+                .HasDatabaseName("IX_Productos_CategoriaId_SubCategoriaId_MarcaId_Nombre")
+                .IsUnique();
+
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+
+            }
+
         }
 
         public DbSet<Categoria> Categoria { get; set; }
@@ -33,6 +43,8 @@ namespace VentaOnline.Data
         public DbSet<SubCategoria> SubCategoria { get; set; }
 
         public DbSet<Tamanio> Tamanio { get; set; }
+
+        public DbSet<Producto> Producto { get; set; }
 
     }
 }

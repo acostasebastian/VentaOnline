@@ -17,6 +17,8 @@ namespace VentaOnline.DataAccess.Data.Repository.IRepository
 
         ITamanioRepository Tamanio { get; }
 
+        IProductoRepository Producto { get; }
+
         void Save();
     }
 }
