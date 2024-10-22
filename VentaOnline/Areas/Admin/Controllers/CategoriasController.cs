@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System.Drawing.Printing;
 using System.Security.Claims;
@@ -258,30 +259,69 @@ namespace VentaOnline.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var objFromDb = _contenedorTrabajo.Categoria.Get(id);
-
-            claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-            _logger.LogInformation("BORRADO DE CATEGORIA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-            if (objFromDb == null)
+            try
             {
-                informacion = "Categoria no encontrada";
-                _logger.LogWarning("BORRADO DE CATEGORIA \r\n Error al querer borrar la Categoria {Time} - {@informacion}", DateTime.Now, informacion);
+                var objFromDb = _contenedorTrabajo.Categoria.Get(id);
 
-                return Json(new { success = false, message = "Error borrando la Categoria" });
+                claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                _logger.LogInformation("BORRADO DE CATEGORIA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                if (objFromDb == null)
+                {
+                    informacion = "Categoria no encontrada";
+                    _logger.LogWarning("BORRADO DE CATEGORIA \r\n Error al querer borrar la Categoria {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la Categoria" });
+                }
+
+                _contenedorTrabajo.Categoria.Remove(objFromDb);
+                _contenedorTrabajo.Save();
+
+                informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
+                _logger.LogInformation("BORRADO DE CATEGORIA \r\n Categoria borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+                Thread.Sleep(250);
+                return Json(new { success = true, message = "Categoria Borrada Correctamente" });
             }
+            catch (DbUpdateException ex)
+            {
 
-            _contenedorTrabajo.Categoria.Remove(objFromDb);
-            _contenedorTrabajo.Save();
 
-            informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
-            _logger.LogInformation("BORRADO DE CATEGORIA \r\n Categoria borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+                 if (ex.InnerException != null &&
+                       ex.InnerException.Message != null)
+                {
 
-            return Json(new { success = true, message = "Categoria Borrada Correctamente" });
+                    if (ex.InnerException.Message.Contains("FK_SubCategoria_Categoria_CategoriaId"))
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE CATEGORIA \r\n Error al querer borrar en Categoría - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+
+                        //AGREGO UN SLEEP AL HILO PARA QUE PUEDAN SALIR CORRECTAMENTE LOS MENSAJES DE JAVASCRIPT
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "No puede borrarse, existen subcategorías asociadas a esta categoría" });
+                    }
+
+                    else
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE CATEGORIA \r\n Error al querer borrar en Categoría - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "Error borrando la Categoría" });
+                    }
+
+                }
+
+                else
+                {
+                    informacion = ex.Message;
+                    _logger.LogWarning("BORRADO DE CATEGORIA \r\n Error al querer borrar en Categoría {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la Categoría" });
+                }
+            }
         }
 
         #endregion

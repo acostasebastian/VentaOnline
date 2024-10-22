@@ -255,32 +255,80 @@ namespace VentaOnline.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var objFromDb = _contenedorTrabajo.Tamanio.Get(id);
-
-            claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-            _logger.LogInformation("BORRADO DE TAMAÑO \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-            if (objFromDb == null)
+            try
             {
-                informacion = "Tamaño no encontrado";
-                _logger.LogWarning("BORRADO DE TAMAÑO \r\n Error al querer borrar la Tamaño {Time} - {@informacion}", DateTime.Now, informacion);
+                
 
-                return Json(new { success = false, message = "Error borrando la Tamaño" });
+                var objFromDb = _contenedorTrabajo.Tamanio.Get(id);
+
+                claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                _logger.LogInformation("BORRADO DE TAMAÑO \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                if (objFromDb == null)
+                {
+                    informacion = "Tamaño no encontrado";
+                    _logger.LogWarning("BORRADO DE TAMAÑO \r\n Error al querer borrar la Tamaño {Time} - {@informacion}", DateTime.Now, informacion);
+
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando el Tamaño" });
+                }
+
+                _contenedorTrabajo.Tamanio.Remove(objFromDb);
+                _contenedorTrabajo.Save();
+
+                informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
+                _logger.LogInformation("BORRADO DE TAMAÑO \r\n Tamaño borrado correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+
+                //AGREGO UN SLEEP AL HILO PARA QUE PUEDAN SALIR CORRECTAMENTE LOS MENSAJES DE JAVASCRIPT
+                Thread.Sleep(250);
+
+                return Json(new { success = true, message = "Tamaño Borrado Correctamente" });
+            }
+            catch (Exception ex)
+            {
+
+                if (ex.InnerException != null &&
+                       ex.InnerException.Message != null)
+                {
+
+                    if (ex.InnerException.Message.Contains("FK_Producto_Tamanio_TamanioId"))
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE TAMAÑO \r\n Error al querer borrar en Tamaño - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+
+                        
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "No puede borrarse, existen productos asociados a este tamaño" });
+                    }
+
+                    else
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE TAMAÑO \r\n Error al querer borrar en Tamaño - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "Error borrando el Tamaño" });
+                    }
+
+                }
+
+                else
+                {
+                    informacion = ex.Message;
+                    _logger.LogWarning("BORRADO DE TAMAÑO \r\n Error al querer borrar en Tamaño {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando el Tamaño" });
+                }
+
             }
 
-            _contenedorTrabajo.Tamanio.Remove(objFromDb);
-            _contenedorTrabajo.Save();
-
-            informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
-            _logger.LogInformation("BORRADO DE TAMAÑO \r\n Tamaño borrado correctamente {Time} - {@informacion}", DateTime.Now, informacion);
-
-            return Json(new { success = true, message = "Tamaño Borrado Correctamente" });
+      
         }
 
-        #endregion
-    }
+            #endregion
+        }
 }

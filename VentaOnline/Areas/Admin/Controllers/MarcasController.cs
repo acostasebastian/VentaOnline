@@ -255,30 +255,72 @@ namespace VentaOnline.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var objFromDb = _contenedorTrabajo.Marca.Get(id);
-
-            claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-            _logger.LogInformation("BORRADO DE MARCA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-            if (objFromDb == null)
+            try
             {
-                informacion = "Marca no encontrada";
-                _logger.LogWarning("BORRADO DE MARCA \r\n Error al querer borrar la Marca {Time} - {@informacion}", DateTime.Now, informacion);
+                var objFromDb = _contenedorTrabajo.Marca.Get(id);
 
-                return Json(new { success = false, message = "Error borrando la Marca" });
+                claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                _logger.LogInformation("BORRADO DE MARCA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                if (objFromDb == null)
+                {
+                    informacion = "Marca no encontrada";
+                    _logger.LogWarning("BORRADO DE MARCA \r\n Error al querer borrar la Marca {Time} - {@informacion}", DateTime.Now, informacion);
+
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la Marca" });
+                }
+
+                _contenedorTrabajo.Marca.Remove(objFromDb);
+                _contenedorTrabajo.Save();
+
+                informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
+                _logger.LogInformation("BORRADO DE MARCA \r\n Marca borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+
+                Thread.Sleep(250);
+                return Json(new { success = true, message = "Marca Borrada Correctamente" });
             }
+            catch (Exception ex)
+            {
 
-            _contenedorTrabajo.Marca.Remove(objFromDb);
-            _contenedorTrabajo.Save();
 
-            informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
-            _logger.LogInformation("BORRADO DE MARCA \r\n Marca borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+                if (ex.InnerException != null &&
+                       ex.InnerException.Message != null)
+                {
 
-            return Json(new { success = true, message = "Marca Borrada Correctamente" });
+                    if (ex.InnerException.Message.Contains("FK_Producto_Marca_MarcaId"))
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE MARCA \r\n Error al querer borrar en Marca - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+
+                        //AGREGO UN SLEEP AL HILO PARA QUE PUEDAN SALIR CORRECTAMENTE LOS MENSAJES DE JAVASCRIPT
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "No puede borrarse, existen productos asociados a esta marca" });
+                    }
+
+                    else
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE MARCA \r\n Error al querer borrar en Marca - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "Error borrando la Marca" });
+                    }
+
+                }
+
+                else
+                {
+                    informacion = ex.Message;
+                    _logger.LogWarning("BORRADO DE MARCA \r\n Error al querer borrar en Marca {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la Marca" });
+                }
+            }
         }
 
         #endregion

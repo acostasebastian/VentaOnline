@@ -86,43 +86,38 @@ function Delete(url) { /*ESTE METODO ES EL QUE SE LLAMA DESDE EL BOTON DE BORRAR
         $.ajax({
             type: 'DELETE', /*esto es la llamada al metodo que está en el controller*/
             url: url,
-            success: function (data) {
+            success: function (data) {  
+
+                //setTimeout(() => {
+                //    console.log("1 Segundo esperado")
+                //}, 1000);
+
                 if (data.success) {
-                    toastr.success(data.message);
+                    // toastr.success(data.message);
+                    swal({
+                        position: "top-end",
+                        type: "success",
+                        title: data.message,
+
+                        showConfirmButton: false,
+                        timer: 1500,                       
+
+                    });
+                 
                     dataTable.ajax.reload();
+
                 }
                 else {
-                    toastr.error(data.message);
+                    // toastr.error(data.message);                  
+                    swal({
+                        type: "error",
+                        title: "Error",
+                        text: data.message
+
+                    });
                 }
             }
-        });
-
-
-        toastr.options = {
-            //primeras opciones
-            "closeButton": false, //boton cerrar
-            "debug": false,
-            "newestOnTop": false, //notificaciones mas nuevas van en la parte superior
-            "progressBar": false, //barra de progreso hasta que se oculta la notificacion
-            "preventDuplicates": false, //para prevenir mensajes duplicados
-
-            "onclick": null,
-
-
-            //Posición de la notificación
-            //toast-bottom-left, toast-bottom-right, toast-bottom-left, toast-top-full-width, toast-top-center
-            "positionClass": "toast-top-center",
-
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut",
-            "tapToDismiss": false,
-        };
+        });       
 
     });
 }

@@ -281,32 +281,71 @@ namespace VentaOnline.Areas.Admin.Controllers
 
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var objFromDb = _contenedorTrabajo.SubCategoria.Get(id);
-
-            claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            emailUsuarioActual = usuarioActual.Subject.Name;
-
-
-            _logger.LogInformation("BORRADO DE SUBCATEGORIA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
-
-            if (objFromDb == null)
+            try
             {
-                informacion = "SubCategoria no encontrada";
-                _logger.LogWarning("BORRADO DE SUBCATEGORIA \r\n Error al querer borrar la SubCategoria {Time} - {@informacion}", DateTime.Now, informacion);
+                var objFromDb = _contenedorTrabajo.SubCategoria.Get(id);
 
-                return Json(new { success = false, message = "Error borrando la SubCategoria" });
+                claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                emailUsuarioActual = usuarioActual.Subject.Name;
+
+
+                _logger.LogInformation("BORRADO DE SUBCATEGORIA \r\n Usuario registrado: {Time} - {@emailUsuarioActual}", DateTime.Now, emailUsuarioActual);
+
+                if (objFromDb == null)
+                {
+                    informacion = "SubCategoria no encontrada";
+                    _logger.LogWarning("BORRADO DE SUBCATEGORIA \r\n Error al querer borrar la SubCategoria {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la SubCategoria" });
+                    
+                }
+
+                _contenedorTrabajo.SubCategoria.Remove(objFromDb);
+                _contenedorTrabajo.Save();
+
+                informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
+                _logger.LogInformation("BORRADO DE SUBCATEGORIA \r\n SubCategoria borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+                Thread.Sleep(250);
+                return Json(new { success = true, message = "SubCategoria Borrada Correctamente" });
             }
+            catch (Exception ex)
+            {
 
-            _contenedorTrabajo.SubCategoria.Remove(objFromDb);
-            _contenedorTrabajo.Save();
+                if (ex.InnerException != null &&
+                       ex.InnerException.Message != null)
+                {
 
-            informacion = "Nombre: " + objFromDb.Nombre + " - Id: " + objFromDb.Id;
-            _logger.LogInformation("BORRADO DE SUBCATEGORIA \r\n SubCategoria borrada correctamente {Time} - {@informacion}", DateTime.Now, informacion);
+                    if (ex.InnerException.Message.Contains("FK_Producto_SubCategoria_SubCategoriaId"))
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE SUBCATEGORIA \r\n Error al querer borrar en SubCategoría - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
 
-            return Json(new { success = true, message = "SubCategoria Borrada Correctamente" });
+                        //AGREGO UN SLEEP AL HILO PARA QUE PUEDAN SALIR CORRECTAMENTE LOS MENSAJES DE JAVASCRIPT
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "No puede borrarse, existen productos asociadas a esta Subcategoría" });
+                    }
+
+                    else
+                    {
+                        informacion = ex.InnerException.Message;
+                        _logger.LogWarning("BORRADO DE SUBCATEGORIA \r\n Error al querer borrar en SubCategoría - InnerException {Time} - {@informacion}", DateTime.Now, informacion);
+                        Thread.Sleep(250);
+                        return Json(new { success = false, message = "Error borrando la SubCategoría" });
+                    }
+
+                }
+
+                else
+                {
+                    informacion = ex.Message;
+                    _logger.LogWarning("BORRADO DE SUBCATEGORIA \r\n Error al querer borrar en SubCategoría {Time} - {@informacion}", DateTime.Now, informacion);
+                    Thread.Sleep(250);
+                    return Json(new { success = false, message = "Error borrando la SubCategoría" });
+                }
+            }
         }
 
         #endregion
