@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using VentaOnline.Models;
 
 namespace VentaOnline.Data
@@ -8,10 +9,10 @@ namespace VentaOnline.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
+        {           
         }
 
-   
+  
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,8 @@ namespace VentaOnline.Data
         public DbSet<Tamanio> Tamanio { get; set; }
 
         public DbSet<Producto> Producto { get; set; }
+
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
     }
 }

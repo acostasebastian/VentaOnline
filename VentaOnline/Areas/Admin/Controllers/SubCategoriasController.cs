@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using VentaOnline.DataAccess.Data.Repository.IRepository;
 using VentaOnline.Models;
@@ -7,6 +8,7 @@ using VentaOnline.Models.ViewModels;
 namespace VentaOnline.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Administrador")]
     public class SubCategoriasController : Controller
     {
         #region variables string

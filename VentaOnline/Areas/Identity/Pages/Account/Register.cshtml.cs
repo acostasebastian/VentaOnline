@@ -18,24 +18,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using VentaOnline.Models;
+using VentaOnline.Utilities;
 
 namespace VentaOnline.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +47,7 @@ namespace VentaOnline.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -74,8 +79,8 @@ namespace VentaOnline.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El Email es obligatorio")]
+            [EmailAddress(ErrorMessage = "El campo Email no es una dirección de correo electrónico válida.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -83,10 +88,10 @@ namespace VentaOnline.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "La Contraseña es obligatoria")]
+            [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} carácteres y como máximo {1} carácteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
             /// <summary>
@@ -94,9 +99,36 @@ namespace VentaOnline.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar Contraseña")]
+            [Compare("Password", ErrorMessage = "Las contraseñas no son iguales.")]
             public string ConfirmPassword { get; set; }
+
+            //Campos personalizados de cajeros 
+            public string? Nombre { get; set; }
+
+            public string? Apellido1 { get; set; }
+            public string? Apellido2 { get; set; }
+
+            [Display(Name = "Nombre Completo")]
+            public string NombreCompleto
+            {
+                get
+                {
+                    if (Apellido2 == null)
+                    {
+                        return Nombre + " " + Apellido1 + " " + Apellido2;
+                    }
+                    else
+                    {
+                        return Nombre + " " + Apellido1;
+
+                    };
+
+
+                }
+            }
+            [Display(Name = "Teléfono")]
+            public string PhoneNumber { get; set; }
         }
 
 
@@ -116,23 +148,52 @@ namespace VentaOnline.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+
+
+                string message = "";
+
+                try { 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                        //Aquí validamos si los roles existen sino se crean
+                        if (!await _roleManager.RoleExistsAsync(CNT.Administrador))
+                        {
+                            await _roleManager.CreateAsync(new IdentityRole(CNT.Administrador));
+                            await _roleManager.CreateAsync(new IdentityRole(CNT.Cliente));                            
+                        }
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                        //Obtenemos el rol seleccionado
+                        string rol = Request.Form["rol"].ToString();
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        //Validamos si el rol seleccionado es Admin y si lo es lo agregamos
+                        if (rol == CNT.Administrador)
+                        {
+                            await _userManager.AddToRoleAsync(user, CNT.Administrador);
+
+                        }
+                        else
+                        {                           
+                            await _userManager.AddToRoleAsync(user, CNT.Cliente);                            
+                           
+                        }
+
+
+                   _logger.LogInformation("El usuario ha creado una nueva cuenta con contraseña.");
+
+                    //var userId = await _userManager.GetUserIdAsync(user);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    //var callbackUrl = Url.Page(
+                    //    "/Account/ConfirmEmail",
+                    //    pageHandler: null,
+                    //    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    //    protocol: Request.Scheme);
+
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirme su email",
+                    //    $"Por favor, confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>en el link</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -146,35 +207,82 @@ namespace VentaOnline.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+
+                    if (error.Description.Contains("least one non alphanumeric character"))
+                    {
+                        message = "Las contraseñas deben tener al menos un carácter no alfanumérico.";
+                    }
+
+                    else if (error.Description.Contains("least one lowercase ('a'-'z')"))
+                    {
+                        message = "Las contraseñas deben tener al menos una minúscula('a' - 'z').";
+                    }
+
+                    else if (error.Description.Contains("least one uppercase ('A'-'Z')."))
+                    {
+                        message = "Las contraseñas deben tener al menos una mayúscula ('A'-'Z').";
+                    }
+
+                    else if (error.Description.Contains("already taken"))
+                    {
+                        message = "El Email ya se encuentra en uso.";
+                    }
+
+
+                    else
+                    {
+                        message = error.Description;
+                    }
+                    ModelState.AddModelError(string.Empty, message);
+                }
+                }
+
+                catch (Exception ex)
+                {
+
+
+                    if (ex.InnerException != null &&
+                       ex.InnerException != null &&
+                       ex.InnerException.Message.Contains("EmailIndex"))
+                    {
+                        message = "El Email ingresado ya se encuentra registrado.";
+                    }
+                    else
+                    {
+                        message = "Contacte con el administrador >> Error: " + ex.Message;
+                    }
+
+                    ModelState.AddModelError(string.Empty, message);
                 }
             }
+
+
 
             // If we got this far, something failed, redisplay form
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }
