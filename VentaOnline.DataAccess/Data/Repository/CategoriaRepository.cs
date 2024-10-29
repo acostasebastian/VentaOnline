@@ -21,7 +21,8 @@ namespace VentaOnline.DataAccess.Data.Repository
         public void Update(Categoria categoria)
         {
             var objDesdeDb = _db.Categoria.FirstOrDefault(s => s.Id == categoria.Id);
-            objDesdeDb.Nombre = categoria.Nombre;          
+            objDesdeDb.Nombre = categoria.Nombre;
+            objDesdeDb.UrlImagen = categoria.UrlImagen;
 
         }
 

@@ -19,6 +19,10 @@ namespace VentaOnline.Models
         [StringLength(50, ErrorMessage = "El campo debe tener entre {2} y {1} caracteres", MinimumLength = 3)]
         [Display(Name = "Categoría")]
         public string Nombre { get; set; }
-      
+
+        [DataType(DataType.ImageUrl)]
+        [Display(Name = "Foto")]
+        public string? UrlImagen { get; set; }
+
     }
 }

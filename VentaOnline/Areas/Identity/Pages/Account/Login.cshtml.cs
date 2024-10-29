@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using VentaOnline.Models;
+using System.Security.Claims;
+using VentaOnline.Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net.NetworkInformation;
 
 namespace VentaOnline.Areas.Identity.Pages.Account
 {
@@ -22,11 +26,11 @@ namespace VentaOnline.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
+       
         public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = logger;          
         }
 
         /// <summary>
@@ -105,8 +109,7 @@ namespace VentaOnline.Areas.Identity.Pages.Account
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
+        {                   
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -115,6 +118,17 @@ namespace VentaOnline.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                //SOLO SI ES ADMINISTRADOR CARGA LAS TABLAS 
+                if (User.IsInRole(CNT.Administrador))
+                {
+                    returnUrl = Url.Content("~/Admin/HomeAdministrador/Index");
+                }
+                else
+                {
+                    returnUrl ??= Url.Content("~/");
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
