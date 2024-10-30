@@ -6,6 +6,7 @@ using VentaOnline.DataAccess.Data.Repository;
 using Serilog;
 using VentaOnline.Models;
 using VentaOnline.DataAccess.Data.Initialiser;
+using VentaOnline.DataAccess.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +37,10 @@ Log.Logger = new LoggerConfiguration().WriteTo.File("logs/Logs.txt", rollingInte
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
 
+//CARRITO
 
+builder.Services.AddSession(); // Habilitar sesión
+builder.Services.AddScoped<ShoppingCart>(); // Añadir ShoppingCart como un servicio
 
 //CARACTERISTICAS DE LA CONTRASEÑA
 //builder.Services.Configure<IdentityOptions>(options =>
@@ -66,6 +70,10 @@ app.UseStaticFiles();
 
 //Siembra de datos - Paso 2 Metodo que ejecuta la siembra de datos
 SiembraDatos();
+
+
+//CARRITO
+app.UseSession(); // Usar sesión
 
 app.UseRouting();
 

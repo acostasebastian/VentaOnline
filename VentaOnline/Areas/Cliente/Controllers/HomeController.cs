@@ -94,6 +94,21 @@ namespace VentaOnline.Areas.Cliente.Controllers
 
         }
 
+        public async Task<IActionResult> Cart()
+        {
+            HomeViewModel homeVM = new HomeViewModel()
+            {
+
+                ListaProductos = _contenedorTrabajo.Producto.GetAll(filter: e => e.Estado == true),
+                ListaCategorias = _contenedorTrabajo.Categoria.GetAll(),
+                ListaSubCategorias = _contenedorTrabajo.SubCategoria.GetAll(),
+            };
+
+
+            return View(homeVM);
+
+        }
+
         private HomeViewModel ToViewModel(Producto producto, HomeViewModel homeVM)
         {
            
@@ -117,7 +132,18 @@ namespace VentaOnline.Areas.Cliente.Controllers
            
         }
 
+        [HttpPost]
+        public JsonResult InsertarCarrito(Carrito oCarrito)
+        {
+            // oCarrito.oUsuario = new Usuario() { IdUsuario = oUsuario.IdUsuario };
+            int _respuesta = 0;
+            //_respuesta = CarritoLogica.Instancia.Registrar(oCarrito);
+            //return Json(new { respuesta = _respuesta }, JsonRequestBehavior.AllowGet);
+            return Json(new { respuesta = _respuesta });
+        }
 
+
+      
         public IActionResult Privacy()
         {
             return View();

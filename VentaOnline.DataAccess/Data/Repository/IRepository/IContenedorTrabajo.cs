@@ -19,6 +19,8 @@ namespace VentaOnline.DataAccess.Data.Repository.IRepository
 
         IProductoRepository Producto { get; }
 
+        IShoppingCartRepository ShoppingCart { get; }
+
         void Save();
     }
 }

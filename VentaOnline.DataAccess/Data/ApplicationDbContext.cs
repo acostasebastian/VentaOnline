@@ -49,5 +49,10 @@ namespace VentaOnline.Data
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
+        public DbSet<Carrito> Carrito { get; set; }
+
+
+        
+
     }
 }

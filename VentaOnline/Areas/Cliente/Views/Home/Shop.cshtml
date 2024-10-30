@@ -1,7 +1,10 @@
 ﻿@model VentaOnline.Models.ViewModels.HomeViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
+
+
 @* <!DOCTYPE html>
 <html lang="en">
 
@@ -122,9 +125,9 @@
 
                                     @{
                                         var paramsTodos = new Dictionary<string, string>
-                            {
-                            { "categoriaId", categoria.Id.ToString() }
-                            };
+                                       {
+                                            { "categoriaId", categoria.Id.ToString() }
+                                       };
                                     }
 
                                     <a asp-area="Cliente" asp-controller="Home" asp-action="Shop" asp-all-route-data="paramsTodos" class="dropdown-item">Todas</a>
@@ -134,10 +137,10 @@
                                     {
 
                                         var parms = new Dictionary<string, string>
-                            {
-                            { "categoriaId", categoria.Id.ToString() },
-                            { "subCategoriaId",subcategoria.Id.ToString() }
-                            };
+                                       {
+                                            { "categoriaId", categoria.Id.ToString() },
+                                            { "subCategoriaId",subcategoria.Id.ToString() }
+                                       };
 
                                         <a asp-area="Cliente" asp-controller="Home" asp-action="Shop" asp-all-route-data="parms" class="dropdown-item">@subcategoria.Nombre</a>
                                     }
@@ -382,12 +385,36 @@
                                 <h6 class="text-truncate mb-3">@producto.Nombre</h6>
                                 <div class="d-flex justify-content-center">
                                     @* <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6> *@
-                                    <h6>@producto.Precio</h6> <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                    <h6>@producto.Precio €</h6> <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                </div>                             
+                                                               
+                               
+                            </div>
+                            <div class="input-group quantity mr-3" style="width: 130px;">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary btn-minus">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="number" id="CantidadComprar-@producto.Id" class="form-control bg-secondary text-center" min="1" max="@producto.Stock" value="1">                               
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary btn-plus">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a asp-area="Cliente" asp-controller="Home" asp-action="Details" asp-route-id="@producto.Id" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>Ver Detalles</a>
-                                <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Agregar al Carrito</a>
+                                <a asp-area="Cliente" asp-controller="Home" asp-action="Details" asp-route-id="@producto.Id" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>Ver Detalles</a>                              
+
+
+                                <a asp-area="Admin" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@producto.Id" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Agregar al Carrito SEBA</a>
+                                @* <button type="button" min="1" data-id="@producto.Id" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> Agregar</button> *@
+                                <button type="button" min="1" data-id="@producto.Id" class="btn-agregar-carrito"><i class="fa fa-shopping-cart"></i> Agregar PROYECTO EJEMPLO</button>
+                               @*  <button type="button" onclick="location.href = '@Url.Action("AddToCart", "ShoppingCart", new {producto = producto})'" class="Details"><i class="fa fa-eye"></i><span class="tooltipp">OTRA COMPRA</span></button> *@
+
+                            
+
+                               
                             </div>
 
 
@@ -511,3 +538,12 @@
 </body>
 
 </html> *@
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    
+     <script src="~/js/carrito.js"></script> 
+    
+}
+

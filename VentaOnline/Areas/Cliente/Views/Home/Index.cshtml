@@ -1,8 +1,5 @@
 ﻿@model VentaOnline.Models.ViewModels.HomeViewModel
 
-
-@* <partial name="_CategoriesPartial" /> *@
-
 <!-- Navbar Start -->
 <div class="container-fluid mb-5">
     <div class="row border-top px-xl-5">
@@ -115,7 +112,7 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="cart.html" class="dropdown-item">Shopping Cart</a>
+                                <a asp-area="Cliente" asp-controller="Home" asp-action="Cart" class="dropdown-item">Shopping Cart</a>
                                 <a href="checkout.html" class="dropdown-item">Checkout</a>
                             </div>
                         </div>
@@ -194,9 +191,9 @@
 <!-- Categories Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5 pb-3">
-        @foreach (var item in Model.ListaCategorias)
+        @foreach (var categoria in Model.ListaCategorias)
         {
-            int cantidad = Model.ListaProductos.Where(p => p.CategoriaId == item.Id).Count();
+            int cantidad = Model.ListaProductos.Where(p => p.CategoriaId == categoria.Id).Count();
 
 
             if (cantidad > 0)
@@ -207,15 +204,22 @@
                         <p class="text-right">@cantidad Productos</p>
 
 
-                        @if (!string.IsNullOrEmpty(item.UrlImagen))
+                        @if (!string.IsNullOrEmpty(categoria.UrlImagen))
                         {
 
-                            <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                                <img class="img-fluid" src="@Url.Content(item.UrlImagen)" alt="">
+                                
+                                        var paramsTodos = new Dictionary<string, string>
+                                        {
+                                            { "categoriaId", categoria.Id.ToString() }
+                                        };                             
+
+
+                            <a asp-area="Cliente" asp-controller="Home" asp-action="Shop" asp-all-route-data="paramsTodos" class="cat-img position-relative overflow-hidden mb-3">
+                                <img class="img-fluid" src="@Url.Content(categoria.UrlImagen)" alt="">
                             </a>
                         }
 
-                        <h5 class="font-weight-semi-bold m-0">@item.Nombre </h5>
+                        <h5 class="font-weight-semi-bold m-0">@categoria.Nombre </h5>
 
                     </div>
                 </div>

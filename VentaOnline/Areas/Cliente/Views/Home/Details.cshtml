@@ -122,9 +122,9 @@
 
                                     @{
                                         var paramsTodos = new Dictionary<string, string>
-                            {
-                            { "categoriaId", categoria.Id.ToString() }
-                            };
+                                        {
+                                            { "categoriaId", categoria.Id.ToString() }
+                                        };
                                     }
 
                                     <a asp-area="Cliente" asp-controller="Home" asp-action="Shop" asp-all-route-data="paramsTodos" class="dropdown-item">Todas</a>
@@ -134,10 +134,10 @@
                                     {
 
                                         var parms = new Dictionary<string, string>
-                            {
-                            { "categoriaId", categoria.Id.ToString() },
-                            { "subCategoriaId",subcategoria.Id.ToString() }
-                            };
+                                        {
+                                            { "categoriaId", categoria.Id.ToString() },
+                                            { "subCategoriaId",subcategoria.Id.ToString() }
+                                        };
 
                                         <a asp-area="Cliente" asp-controller="Home" asp-action="Shop" asp-all-route-data="parms" class="dropdown-item">@subcategoria.Nombre</a>
                                     }
@@ -261,7 +261,7 @@
                     </div>
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
-                <h3 class="font-weight-semi-bold mb-4">$150.00</h3>
+                <h3 class="font-weight-semi-bold mb-4">@Model.Precio €</h3>
             <p class="mb-4">@Model.Observaciones</p>             
             <p class="mb-4"></p>
                 <div class="d-flex mb-3">

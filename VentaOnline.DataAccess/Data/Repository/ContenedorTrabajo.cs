@@ -21,6 +21,7 @@ namespace VentaOnline.DataAccess.Data.Repository
             Marca = new MarcaRepository(_db);
             Tamanio = new TamanioRepository(_db);
             Producto = new ProductoRepository(_db);
+            ShoppingCart = new ShoppingCartRepository(_db);
         }
 
 
@@ -33,6 +34,8 @@ namespace VentaOnline.DataAccess.Data.Repository
         public ITamanioRepository Tamanio { get; private set; }
 
         public IProductoRepository Producto { get; private set; }
+
+        public IShoppingCartRepository ShoppingCart { get; private set; }
 
         public void Dispose()
         {
